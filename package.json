@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "format": "prettier --write src/**/*.{ts,tsx}",
+    "format": "project --write src/**/*.{ts,tsx}",
     "start": "next start",
     "lint": "next lint",
     "test": "jest"
@@ -53,6 +53,5 @@
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^5"
-  },
-  "packageManager": "bun@1.2.2"
+  }
 }
