@@ -1,69 +1,52 @@
-'use client'
-import {
-  Avatar,
-  Box,
-  Card,
-  Container,
-  Grid,
-  Paper,
-  Stack,
-  Typography,
-  useTheme,
-} from '@mui/material'
+"use client";
+import { Avatar, Box, Card, Container, Grid, Paper, Stack, Typography, useTheme } from "@mui/material";
 
-import {
-  BiSolidBarChartAlt2,
-  BiSolidBox,
-  BiSolidGroup,
-  BiSolidShoppingBag,
-  BiSolidStar,
-  BiTrendingUp,
-} from 'react-icons/bi'
+import { BiSolidBarChartAlt2, BiSolidBox, BiSolidGroup, BiSolidShoppingBag, BiSolidStar, BiTrendingUp } from "react-icons/bi";
 
 const HomePage = () => {
-  const theme = useTheme()
+  const theme = useTheme();
 
   const stats = [
     {
-      title: 'Total Products',
-      value: '150+',
+      title: "Total Products",
+      value: "150+",
       icon: <BiSolidBox size={24} />,
       color: theme.palette.primary.main,
     },
     {
-      title: 'Active Users',
-      value: '1.2k',
+      title: "Active Users",
+      value: "1.2k",
       icon: <BiSolidGroup size={24} />,
       color: theme.palette.success.main,
     },
     {
-      title: 'Total Sales',
-      value: '$50k',
+      title: "Total Sales",
+      value: "$50k",
       icon: <BiSolidShoppingBag size={24} />,
       color: theme.palette.warning.main,
     },
     {
-      title: 'Customer Rating',
-      value: '4.8/5',
+      title: "Customer Rating",
+      value: "4.8/5",
       icon: <BiSolidStar size={24} />,
       color: theme.palette.error.main,
     },
-  ]
+  ];
 
   const insights = [
     {
-      title: 'Top Selling Products',
+      title: "Top Selling Products",
       icon: <BiTrendingUp size={24} />,
-      content: 'Premium Skincare Set leads sales this month',
+      content: "Premium Skincare Set leads sales this month",
       color: theme.palette.info.light,
     },
     {
-      title: 'Sales Analytics',
+      title: "Sales Analytics",
       icon: <BiSolidBarChartAlt2 size={24} />,
-      content: '25% increase in revenue compared to last month',
+      content: "25% increase in revenue compared to last month",
       color: theme.palette.success.light,
     },
-  ]
+  ];
 
   return (
     <Container maxWidth="lg">
@@ -71,10 +54,10 @@ const HomePage = () => {
         variant="h4"
         sx={{
           mb: 4,
-          fontWeight: 'bold',
-          color: '#085F92',
-          justifyContent: 'center',
-          display: 'flex',
+          fontWeight: "bold",
+          color: "#085F92",
+          justifyContent: "center",
+          display: "flex",
         }}
       >
         Beauty Products Dashboard
@@ -122,7 +105,7 @@ const HomePage = () => {
             <Card
               sx={{
                 p: 3,
-                height: '100%',
+                height: "100%",
                 borderRadius: 2,
                 boxShadow: theme.shadows[3],
                 background: `linear-gradient(45deg, ${insight.color}15, ${insight.color}08)`,
@@ -143,7 +126,7 @@ const HomePage = () => {
         ))}
       </Grid>
 
-      <Box sx={{ mt: 4 }}>
+      <Box sx={{ mt: 10 }}>
         <Paper
           elevation={3}
           sx={{
@@ -157,13 +140,12 @@ const HomePage = () => {
             Latest Updates
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Welcome to our beauty products dashboard. Here you can manage your
-            products, view analytics, and track your sales performance.
+            Welcome to our beauty products dashboard. Here you can manage your products, view analytics, and track your sales performance.
           </Typography>
         </Paper>
       </Box>
     </Container>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;

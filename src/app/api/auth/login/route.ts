@@ -53,7 +53,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 })
     }
   } catch (error) {
-    console.log('🚀 ~ :50 ~ POST ~ error:', error)
     if (error instanceof yup.ValidationError) {
       return NextResponse.json(
         { message: error.errors.join(', ') },

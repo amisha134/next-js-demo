@@ -32,7 +32,6 @@ export default function ProductDetail() {
         const response = await HttpClient.get<ProductType>(
           `${API_ROUTES.SHOW}/${id}`
         )
-        console.log('response', response.data)
 
         setProduct(response?.data) // Now response.data is of type ProductType
       } catch (error) {
