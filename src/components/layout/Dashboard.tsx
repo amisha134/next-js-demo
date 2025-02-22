@@ -85,7 +85,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function DashboardLayout({ children }: ChildrenType) {
   const theme = useTheme();
-  const isAuthenticated = localStorage.getItem("token");
+  const isAuthenticated = typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const dispatch = useDispatch();
   const { push } = useRouter();
   const pathname = usePathname(); // Add this hook
