@@ -18,10 +18,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { LuChevronLeft, LuChevronRight, LuMenu } from "react-icons/lu";
+import { LuChevronLeft, LuChevronRight, LuMenu, LuLayoutDashboard, LuShoppingBag } from "react-icons/lu";
 import { useDispatch } from "react-redux";
 import logo from "../../../public/images/mainlogo.png";
 import Image from "next/image";
+import ListItemIcon from "@mui/material/ListItemIcon";
 
 const drawerWidth = 240;
 
@@ -85,28 +86,44 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function DashboardLayout({ children }: ChildrenType) {
   const theme = useTheme();
-  const isAuthenticated = typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const dispatch = useDispatch();
   const { push } = useRouter();
-  const pathname = usePathname(); // Add this hook
+  const pathname = usePathname();
+
+  // Initialize with a default value without localStorage
+  const [open, setOpen] = React.useState(false);
+
+  // Handle localStorage in useEffect
+  useEffect(() => {
+    const savedState = localStorage.getItem("sidebarOpen");
+    if (savedState) {
+      setOpen(JSON.parse(savedState));
+    }
+  }, []);
+
+  // Separate authentication check
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      push(ROUTES.AUTH_LOGIN);
+    }
+  }, [push]);
 
   const menuItems = [
-    { text: "Home", path: "/home" },
-    { text: "Dashboard", path: "/" }, // Ensure this path matches your route
+    {
+      text: "Dashboard",
+      path: "/home",
+      icon: <LuLayoutDashboard size={20} />,
+    },
+    {
+      text: "Products", // Changed from "Home" to "Products"
+      path: "/",
+      icon: <LuShoppingBag size={20} />, // Changed to shopping bag icon
+    },
   ];
-
   const handleMenuClick = (path: string) => {
     push(path);
   };
-
-  // Initialize open state from localStorage or default to false
-  const [open, setOpen] = React.useState(() => {
-    if (typeof window !== "undefined") {
-      const savedState = localStorage.getItem("sidebarOpen");
-      return savedState ? JSON.parse(savedState) : false;
-    }
-    return false;
-  });
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -123,10 +140,6 @@ export default function DashboardLayout({ children }: ChildrenType) {
     push(ROUTES.AUTH_LOGIN);
   };
 
-  useEffect(() => {
-    if (!isAuthenticated) push(ROUTES.AUTH_LOGIN);
-  }, [isAuthenticated]);
-
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar position="fixed" open={open} sx={{ backgroundColor: "white" }}>
@@ -141,6 +154,7 @@ export default function DashboardLayout({ children }: ChildrenType) {
             variant="contained"
             sx={{
               ml: "auto",
+              textTransform: "none", // Add this line to prevent auto-capitalization
               background: "linear-gradient(135deg, #085F92 0%, #68A0C1 100%)",
               "&:hover": {
                 background: "linear-gradient(120deg,rgb(110, 182, 220) 0%,rgb(5, 107, 167) 100%)",
@@ -148,7 +162,7 @@ export default function DashboardLayout({ children }: ChildrenType) {
             }}
             onClick={handleLogout}
           >
-            Logout
+            Log out
           </Button>
         </Toolbar>
       </AppBar>
@@ -199,10 +213,27 @@ export default function DashboardLayout({ children }: ChildrenType) {
                       color: "primary.main",
                       fontWeight: "bold",
                     },
+                    "& .MuiListItemIcon-root": {
+                      color: "primary.main",
+                    },
+                  },
+                  "&:hover": {
+                    "& .MuiListItemIcon-root": {
+                      color: "primary.main",
+                    },
                   },
                 }}
               >
-                <ListItemText primary={item?.text} />
+                <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
+                <ListItemText
+                  primary={item.text}
+                  sx={{
+                    "& .MuiTypography-root": {
+                      fontSize: "0.95rem",
+                      fontWeight: pathname === item.path ? "600" : "normal",
+                    },
+                  }}
+                />
               </ListItemButton>
             </ListItem>
           ))}
