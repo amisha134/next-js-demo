@@ -1,54 +1,82 @@
-'use client'
-import React from 'react'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { Box, Button } from '@mui/material'
-import { useForm } from 'react-hook-form'
-import { useDispatch, useSelector } from 'react-redux'
-import * as yup from 'yup'
-import { useSnackbar } from 'notistack'
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import PasswordInput from '@/components/form/PasswordInput'
-import FormInput from '@/components/form/TextInput'
-import { saveSession, type LoginFormFields } from '@/redux/slices/auth'
-import type { AppDispatch, RootState } from '@/redux/store'
-import { ROUTES } from '@/config/constants'
+"use client";
+import React from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Box, Button } from "@mui/material";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import * as yup from "yup";
+import { toast } from "react-toastify";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import PasswordInput from "@/components/form/PasswordInput";
+import FormInput from "@/components/form/TextInput";
+import { saveSession, type LoginFormFields } from "@/redux/slices/auth";
+import type { AppDispatch, RootState } from "@/redux/store";
+import { ROUTES } from "@/config/constants";
 
 export default function LoginForm() {
-  const dispatch = useDispatch<AppDispatch>()
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
-  )
-  const error = useSelector((state: RootState) => state.auth.error)
-  const user = useSelector((state: RootState) => state.auth.user)
-  const { push } = useRouter()
-  const { enqueueSnackbar } = useSnackbar()
+  const dispatch = useDispatch<AppDispatch>();
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const error = useSelector((state: RootState) => state.auth.error);
+  const user = useSelector((state: RootState) => state.auth.user);
+  const { push } = useRouter();
 
   const loginFormSchema = yup.object({
-    email: yup
-      .string()
-      .email('Please enter valid email')
-      .required('Please enter email'),
-    password: yup.string().required('Please enter password'),
-  })
+    email: yup.string().email("Please enter valid email").required("Please enter email"),
+    password: yup.string().required("Please enter password").min(6, "Password must be at least 6 characters"),
+  });
 
   const { control, handleSubmit } = useForm({
     resolver: yupResolver(loginFormSchema),
     defaultValues: {
-      email: 'john@example.com',
-      password: 'password123',
+      email: "john@example.com",
+      password: "password123",
     },
-  })
+  });
 
-  const handleLogin = (data: LoginFormFields) => dispatch(saveSession(data))
+  const handleLogin = async (data: LoginFormFields) => {
+    try {
+      const result = await dispatch(saveSession(data)).unwrap();
+      if (result) {
+        toast.success("Login successful!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      }
+    } catch (err) {
+      if (err instanceof Error && err.message) {
+        toast.error(err.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      }
+    }
+  };
 
   useEffect(() => {
-    if (user && isAuthenticated) push(ROUTES.HOME)
-  }, [isAuthenticated])
+    if (user && isAuthenticated) push(ROUTES.HOME);
+  }, [isAuthenticated]);
 
   useEffect(() => {
-    if (error) enqueueSnackbar(error, { variant: 'error' })
-  }, [error])
+    if (error) {
+      toast.error(error, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  }, [error]);
 
   return (
     <form onSubmit={handleSubmit(handleLogin)}>
@@ -59,23 +87,23 @@ export default function LoginForm() {
         placeholder="Email Address"
         control={control}
         sx={{
-          '& .MuiOutlinedInput-root': {
-            transition: 'all 0.3s ease-in-out',
-            '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#667eea',
+          "& .MuiOutlinedInput-root": {
+            transition: "all 0.3s ease-in-out",
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#667eea",
             },
-            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#764ba2',
-              borderWidth: '2px',
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#764ba2",
+              borderWidth: "2px",
             },
           },
-          '& .MuiInputLabel-root': {
+          "& .MuiInputLabel-root": {
             fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
           },
-          '& .MuiInputLabel-root.Mui-focused': {
-            color: '#764ba2',
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#764ba2",
           },
-          '& .MuiInputBase-input': {
+          "& .MuiInputBase-input": {
             fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
           },
         }}
@@ -89,51 +117,51 @@ export default function LoginForm() {
           placeholder="Password"
           control={control}
           sx={{
-            '& .MuiOutlinedInput-root': {
-              transition: 'all 0.3s ease-in-out',
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: '#667eea',
+            "& .MuiOutlinedInput-root": {
+              transition: "all 0.3s ease-in-out",
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#667eea",
               },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: '#764ba2',
-                borderWidth: '2px',
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#764ba2",
+                borderWidth: "2px",
               },
             },
-            '& .MuiInputLabel-root': {
+            "& .MuiInputLabel-root": {
               fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
             },
-            '& .MuiInputLabel-root.Mui-focused': {
-              color: '#764ba2',
+            "& .MuiInputLabel-root.Mui-focused": {
+              color: "#764ba2",
             },
-            '& .MuiInputBase-input': {
-              fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+            "& .MuiInputBase-input": {
+              fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif'",
             },
           }}
         />
       </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
         <Button
           variant="contained"
           sx={{
-            background: 'linear-gradient(135deg, #68A0C1 0%, #045F97 100%)',
-            color: '#fff',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            textTransform: 'none',
+            background: "linear-gradient(135deg, #68A0C1 0%, #045F97 100%)",
+            color: "#fff",
+            fontSize: "16px",
+            fontWeight: "bold",
+            textTransform: "none",
             borderRadius: 2,
-            padding: '10px 20px',
-            fontFamily: 'sans-serif',
-            transition: 'all 0.3s ease-in-out',
-            boxShadow: '0 4px 6px rgba(102, 126, 234, 0.25)',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #045F97 0%, #68A0C1 100%)',
-              transform: 'translateY(-2px)',
-              boxShadow: '0 6px 8px rgba(102, 126, 234, 0.35)',
+            padding: "10px 20px",
+            fontFamily: "sans-serif",
+            transition: "all 0.3s ease-in-out",
+            boxShadow: "0 4px 6px rgba(102, 126, 234, 0.25)",
+            "&:hover": {
+              background: "linear-gradient(135deg, #045F97 0%, #68A0C1 100%)",
+              transform: "translateY(-2px)",
+              boxShadow: "0 6px 8px rgba(102, 126, 234, 0.35)",
             },
-            '&:active': {
-              transform: 'translateY(0)',
-              boxShadow: '0 2px 4px rgba(102, 126, 234, 0.25)',
+            "&:active": {
+              transform: "translateY(0)",
+              boxShadow: "0 2px 4px rgba(102, 126, 234, 0.25)",
             },
           }}
           type="submit"
@@ -144,5 +172,5 @@ export default function LoginForm() {
         </Button>
       </Box>
     </form>
-  )
+  );
 }

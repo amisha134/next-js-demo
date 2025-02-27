@@ -11,7 +11,6 @@ import {
   Box,
   Typography,
   Pagination,
-  Stack,
   Button,
   TextField,
   InputAdornment,
@@ -59,14 +58,24 @@ const CharactersGrid = () => {
   const totalPages = Math.ceil(filteredResults.length / rowsPerPage);
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box
+      sx={{
+        width: "100%",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden", // Add this
+      }}
+    >
+      {/* Header with search */}
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          mb: 3,
+          p: 3, // Add padding
           gap: 2,
+          position: "sticky",
         }}
       >
         <Typography
@@ -106,17 +115,30 @@ const CharactersGrid = () => {
             ),
           }}
         />
-
-        <Typography variant="body2" color="text.secondary" sx={{ minWidth: "max-content" }}>
-          {filteredResults.length} products found
-        </Typography>
       </Box>
 
+      {/* Scrollable Table Container */}
       <TableContainer
         component={Paper}
         sx={{
-          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.05)",
-          borderRadius: "8px",
+          flex: 1,
+          overflow: "auto",
+          boxShadow: "none",
+          maxHeight: "calc(90vh - 180px)", // Adjust height to account for header and pagination
+          "&::-webkit-scrollbar": {
+            width: "8px",
+            height: "8px",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "#f1f1f1",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "#888",
+            borderRadius: "4px",
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            background: "#555",
+          },
         }}
       >
         <Table sx={{ minWidth: 650 }} aria-label="product table">
@@ -127,20 +149,20 @@ const CharactersGrid = () => {
               <TableCell>Status</TableCell>
               <TableCell>Category</TableCell>
               <TableCell>Discount</TableCell>
+              <TableCell>Price</TableCell>
               <TableCell>Brand</TableCell>
-              <TableCell>Description</TableCell>
               <TableCell>Warranty</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedResults.map((character) => (
-              <TableRow key={character.title} sx={{ "&:hover": { backgroundColor: "#f8f8f8" } }}>
-                <TableCell>
+            {paginatedResults?.map((character) => (
+              <TableRow key={character?.title} sx={{ "&:hover": { backgroundColor: "#f8f8f8" } }}>
+                <TableCell onClick={() => handleViewProduct(character?.id)} sx={{ cursor: "pointer" }}>
                   <Box
                     component="img"
-                    src={character.images?.[0]}
-                    alt={character.title}
+                    src={character?.images?.[0]}
+                    alt={character?.title}
                     sx={{
                       width: 60,
                       height: 60,
@@ -149,30 +171,22 @@ const CharactersGrid = () => {
                     }}
                   />
                 </TableCell>
-                <TableCell>{character?.title}</TableCell>
+                <TableCell onClick={() => handleViewProduct(character?.id)} sx={{ cursor: "pointer" }}>
+                  {character?.title}
+                </TableCell>
                 <TableCell>{character?.availabilityStatus}</TableCell>
                 <TableCell>{character?.category}</TableCell>
                 <TableCell>{character?.discountPercentage}%</TableCell>
-                <TableCell>{character?.brand}</TableCell>
                 <TableCell>
-                  <Typography
-                    sx={{
-                      display: "-webkit-box",
-                      WebkitLineClamp: 1,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                      maxWidth: 200,
-                    }}
-                  >
-                    {character?.description}
-                  </Typography>
+                  <Typography>{character?.price} $</Typography>
                 </TableCell>
+                <TableCell>{character?.brand}</TableCell>
                 <TableCell>{character?.warrantyInformation}</TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
                     size="small"
-                    onClick={() => handleViewProduct(character.id)}
+                    onClick={() => handleViewProduct(character?.id)}
                     sx={{
                       background: "linear-gradient(135deg, #085F92 0%, #68A0C1 100%)",
                       "&:hover": {
@@ -189,27 +203,42 @@ const CharactersGrid = () => {
         </Table>
       </TableContainer>
 
-      <Stack
-        spacing={2}
+      {/* Sticky Pagination */}
+      <Box
         sx={{
-          mt: 3,
-          mb: 2,
+          display: "flex",
+          justifyContent: "center",
           alignItems: "center",
-          "& .MuiPagination-ul": {
-            "& .MuiPaginationItem-root": {
-              "&.Mui-selected": {
-                backgroundColor: "#085F92",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "#068FCA",
-                },
-              },
-            },
-          },
+          gap: 4,
+          p: 2,
+          borderTop: "1px solid #e0e0e0",
+          backgroundColor: "white",
+          // position: "sticky",
+          // bottom: 0,
+          // zIndex: 1,
         }}
       >
-        <Pagination count={totalPages} page={page} onChange={handlePageChange} variant="outlined" shape="rounded" color="primary" />
-      </Stack>
+        <Pagination
+          count={totalPages}
+          page={page}
+          onChange={handlePageChange}
+          variant="outlined"
+          shape="rounded"
+          color="primary"
+          sx={{
+            "& .MuiPaginationItem-root.Mui-selected": {
+              backgroundColor: "#085F92",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#068FCA",
+              },
+            },
+          }}
+        />
+        <Typography variant="body2" color="text.secondary">
+          {filteredResults.length} products found
+        </Typography>
+      </Box>
     </Box>
   );
 };

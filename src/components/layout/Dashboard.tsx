@@ -89,6 +89,7 @@ export default function DashboardLayout({ children }: ChildrenType) {
   const dispatch = useDispatch();
   const { push } = useRouter();
   const pathname = usePathname();
+  const router = useRouter();
 
   // Initialize with a default value without localStorage
   const [open, setOpen] = React.useState(false);
@@ -186,7 +187,13 @@ export default function DashboardLayout({ children }: ChildrenType) {
           p={2} // Padding for spacing
         >
           {/* Logo & Title */}
-          <Box display="flex" alignItems="end" gap={1}>
+          <Box
+            display="flex"
+            alignItems="end"
+            gap={1}
+            onClick={() => router.push("/home")}
+            sx={{ cursor: "pointer" }} // Added for better UX
+          >
             <Image src={logo} alt="Logo" height={38} width={50} />
             <Typography variant="h5" fontWeight="bolder" color="#2472A0">
               Beauty
