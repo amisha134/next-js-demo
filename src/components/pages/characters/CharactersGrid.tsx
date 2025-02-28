@@ -172,22 +172,21 @@ const CharactersGrid = () => {
                   />
                 </TableCell>
                 <TableCell onClick={() => handleViewProduct(character?.id)} sx={{ cursor: "pointer" }}>
-                  {character?.title}
+                  {character?.title ?? "-"}
                 </TableCell>
-                <TableCell>{character?.availabilityStatus}</TableCell>
-                <TableCell>{character?.category}</TableCell>
-                <TableCell>{character?.discountPercentage}%</TableCell>
-                <TableCell>
-                  <Typography>{character?.price} $</Typography>
-                </TableCell>
-                <TableCell>{character?.brand}</TableCell>
-                <TableCell>{character?.warrantyInformation}</TableCell>
+                <TableCell>{character?.availabilityStatus ?? "-"}</TableCell>
+                <TableCell>{character?.category ?? "-"}</TableCell>
+                <TableCell>{character?.discountPercentage ?? 0} %</TableCell>
+                <TableCell>$ {character?.price ?? 0}</TableCell>
+                <TableCell>{character?.brand ?? "-"}</TableCell>
+                <TableCell>{character?.warrantyInformation ?? "-"}</TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
                     size="small"
                     onClick={() => handleViewProduct(character?.id)}
                     sx={{
+                      textTransform: "none",
                       background: "linear-gradient(135deg, #085F92 0%, #68A0C1 100%)",
                       "&:hover": {
                         background: "linear-gradient(120deg,rgb(110, 182, 220) 0%,rgb(5, 107, 167) 100%)",
