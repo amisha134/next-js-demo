@@ -1,4 +1,4 @@
-import { AUTH } from "@/config/constants";
+import { AUTH, ROUTES } from "@/config/constants";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -14,17 +14,17 @@ export function middleware(request: NextRequest) {
 
   // If trying to access auth page while already logged in
   if (isAuthPage && token) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL(ROUTES.HOME, request.url));
   }
 
   // If trying to access protected route without token
   if (!isAuthPage && !token) {
-    return NextResponse.redirect(new URL("/auth/login", request.url));
+    return NextResponse.redirect(new URL(ROUTES.AUTH_LOGIN, request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/", "/dashboard", "/home", "/auth/:path*", "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)"],
 };
